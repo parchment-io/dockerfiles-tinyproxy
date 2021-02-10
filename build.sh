@@ -16,9 +16,8 @@ fi
 
 set -e
 
-docker build --no-cache -t $1-nonstrip .
-COMMIT=$(docker run --entrypoint /bin/cat $1-nonstrip /.commit)
-./strip-docker-image -i $1-nonstrip -t $1 -f /tmp -f /bin -f /sbin -f /lib -f /etc -f /usr/bin -f /usr/lib -f /usr/local -f /usr/sbin -f /lib64 -f /var/run
+docker build --no-cache -t $1:latest .
+COMMIT=$(docker run --entrypoint /bin/cat $1:latest /.commit)
 docker tag $1:latest $1:${COMMIT}
 docker push $1:latest
 docker push $1:${COMMIT}
