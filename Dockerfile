@@ -18,4 +18,4 @@ COPY --from=build /usr/local/bin/tinyproxy /usr/local/bin/
 RUN apk update && apk add curl && sed -E -i 's/^Port 8888/Port 8080/' /etc/tinyproxy/tinyproxy.conf
 ENTRYPOINT ["/usr/local/bin/tinyproxy"]
 CMD ["-d", "-c", "/etc/tinyproxy/tinyproxy.conf"]
-HEALTHCHECK --start-period=60s CMD ["curl", "--resolve", "tinyproxy.stats:8080:127.0.0.1", "-s", "-o", "/dev/null", "-w", "\"%{http_code}\"", "http://tinyproxy.stats:8080"]
+HEALTHCHECK --start-period=60s CMD ["/bin/sh", "-c", "if [ $(curl --resolve tinyproxy.stats:8080:127.0.0.1 -s -o /dev/null -w \"%{http_code}\" http://tinyproxy.stats:8080) = 200 ]; then exit 0; else exit 1; fi"]
